@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Html } from '@react-three/drei';
 import axios from 'axios';
 import './App.css';
 
