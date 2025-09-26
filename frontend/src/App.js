@@ -282,7 +282,6 @@ function FactoryRoom({ gameState, onBuildHouse, materials, onClose }) {
 }
 
 function ControlRoom({ gameState, upgrades, onBuyUpgrade, onClose }) {
-  const [selectedUpgrade, setSelectedUpgrade] = useState(null);
   
   const getUpgradeLevel = (upgradeId) => {
     const upgrade = gameState.upgrades?.find(u => u.upgrade_id === upgradeId);
