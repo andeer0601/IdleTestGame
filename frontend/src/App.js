@@ -134,17 +134,37 @@ function Room3D({ roomType, onInteract }) {
 
 function GameScene({ currentRoom, onRoomChange }) {
   return (
-    <Canvas camera={{ position: [0, 2, 8] }} style={{ height: '60vh' }}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <pointLight position={[-10, -10, -5]} color="#7b2cbf" />
+    <div className="relative">
+      <Canvas camera={{ position: [0, 2, 8] }} style={{ height: '60vh' }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <pointLight position={[-10, -10, -5]} color="#7b2cbf" />
+        
+        <Room3D roomType="factory" onInteract={onRoomChange} />
+        <Room3D roomType="control" onInteract={onRoomChange} />
+        <Room3D roomType="planets" onInteract={onRoomChange} />
+        
+        <CameraControls />
+      </Canvas>
       
-      <Room3D roomType="factory" onInteract={onRoomChange} />
-      <Room3D roomType="control" onInteract={onRoomChange} />
-      <Room3D roomType="planets" onInteract={onRoomChange} />
-      
-      <OrbitControls enableZoom={true} enablePan={true} />
-    </Canvas>
+      {/* UI Labels */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <div className="text-cyber-blue font-bold text-lg glow-text">Central de Produção</div>
+          <div className="text-gray-400 text-sm text-center">Clique no cubo azul</div>
+        </div>
+        
+        <div className="absolute top-1/2 right-1/4 transform -translate-y-1/2">
+          <div className="text-cyber-purple font-bold text-lg glow-text">Centro de Controle</div>
+          <div className="text-gray-400 text-sm text-center">Clique na esfera roxa</div>
+        </div>
+        
+        <div className="absolute top-1/2 left-1/4 transform -translate-y-1/2">
+          <div className="text-cyber-green font-bold text-lg glow-text">Estações Planetárias</div>
+          <div className="text-gray-400 text-sm text-center">Clique no cubo verde</div>
+        </div>
+      </div>
+    </div>
   );
 }
 
