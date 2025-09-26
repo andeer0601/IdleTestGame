@@ -470,14 +470,57 @@ function App() {
 
   // Initialize game
   useEffect(() => {
-    initializeGame();
+    const initialize = async () => {
+      try {
+        setLoading(true);
+        
+        // Get static data
+        const [materialsData, upgradesData, planetsData] = await Promise.all([
+          gameAPI.getMaterials(),
+          gameAPI.getUpgrades(),
+          gameAPI.getPlanets()
+        ]);
+        
+        setMaterials(materialsData);
+        setUpgrades(upgradesData);
+        setPlanets(planetsData);
+        
+        // Check for existing player or create new one
+        let savedPlayerId = localStorage.getItem('playerId');
+        if (!savedPlayerId) {
+          savedPlayerId = await gameAPI.createPlayer();
+          localStorage.setItem('playerId', savedPlayerId);
+        }
+        
+        setPlayerId(savedPlayerId);
+        
+        // Get initial game state
+        const state = await gameAPI.getGameState(savedPlayerId);
+        setGameState(state);
+        
+      } catch (err) {
+        console.error('Erro ao inicializar o jogo:', err);
+        setError('Falha ao carregar o jogo. Verifique sua conexão.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    initialize();
   }, []);
 
   // Auto-refresh game state
   useEffect(() => {
     if (playerId) {
-      const interval = setInterval(() => {
-        refreshGameState();
+      const interval = setInterval(async () => {
+        try {
+          const state = await gameAPI.getGameState(playerId);
+          setGameState(state);
+          setError(null);
+        } catch (err) {
+          console.error('Erro ao atualizar estado do jogo:', err);
+          setError('Erro ao sincronizar com o servidor');
+        }
       }, 5000); // Update every 5 seconds
       
       return () => clearInterval(interval);
