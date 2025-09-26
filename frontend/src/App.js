@@ -590,7 +590,7 @@ function App() {
         <div className="text-center">
           <p className="text-red-400 text-xl mb-4">{error}</p>
           <button 
-            onClick={initializeGame}
+            onClick={() => window.location.reload()}
             className="bg-cyber-blue hover:bg-cyber-blue/80 text-white px-6 py-3 rounded-lg font-bold"
           >
             Tentar Novamente
