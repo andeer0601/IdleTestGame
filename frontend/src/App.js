@@ -49,6 +49,10 @@ const gameAPI = {
 };
 
 // 3D Components
+function CameraControls() {
+  return null; // Simple camera, user can drag to orbit
+}
+
 function Box({ position, onClick, color, children }) {
   const meshRef = useRef();
   
@@ -87,23 +91,6 @@ function Sphere({ position, onClick, color, children }) {
   );
 }
 
-function FloatingText({ position, text, color = "white", fontSize = 0.3 }) {
-  return (
-    <Html position={position}>
-      <div style={{
-        color: color,
-        fontSize: `${fontSize * 50}px`,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        pointerEvents: 'none',
-        textShadow: '0 0 10px currentColor'
-      }}>
-        {text}
-      </div>
-    </Html>
-  );
-}
-
 function Room3D({ roomType, onInteract }) {
   const getRoomColor = () => {
     switch(roomType) {
@@ -121,8 +108,6 @@ function Room3D({ roomType, onInteract }) {
           <group>
             <Box position={[0, 0, 0]} onClick={() => onInteract('factory')} color={getRoomColor()}>
             </Box>
-            <FloatingText position={[0, 1.5, 0]} text="Central de Produção" fontSize={0.3} />
-            <FloatingText position={[0, -1.5, 0]} text="Clique para acessar" color="gray" fontSize={0.2} />
           </group>
         );
       case 'control':
@@ -130,8 +115,6 @@ function Room3D({ roomType, onInteract }) {
           <group>
             <Sphere position={[4, 0, 0]} onClick={() => onInteract('control')} color={getRoomColor()}>
             </Sphere>
-            <FloatingText position={[4, 1.5, 0]} text="Centro de Controle" fontSize={0.3} />
-            <FloatingText position={[4, -1.5, 0]} text="Melhorias e Upgrades" color="gray" fontSize={0.2} />
           </group>
         );
       case 'planets':
@@ -139,8 +122,6 @@ function Room3D({ roomType, onInteract }) {
           <group>
             <Box position={[-4, 0, 0]} onClick={() => onInteract('planets')} color={getRoomColor()}>
             </Box>
-            <FloatingText position={[-4, 1.5, 0]} text="Estações Planetárias" fontSize={0.3} />
-            <FloatingText position={[-4, -1.5, 0]} text="Mineração e Materiais" color="gray" fontSize={0.2} />
           </group>
         );
       default:
