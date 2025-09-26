@@ -50,9 +50,62 @@ const gameAPI = {
 };
 
 // 3D Components
-function Room3D({ roomType, onInteract }) {
+function Box({ position, onClick, color, children }) {
   const meshRef = useRef();
   
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += delta * 0.2;
+      meshRef.current.rotation.y += delta * 0.1;
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef} position={position} onClick={onClick}>
+      <boxGeometry args={[2, 1, 1]} />
+      <meshStandardMaterial color={color} />
+      {children}
+    </mesh>
+  );
+}
+
+function Sphere({ position, onClick, color, children }) {
+  const meshRef = useRef();
+  
+  useFrame((state, delta) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x += delta * 0.1;
+      meshRef.current.rotation.y += delta * 0.3;
+    }
+  });
+  
+  return (
+    <mesh ref={meshRef} position={position} onClick={onClick}>
+      <sphereGeometry args={[1, 32, 32]} />
+      <meshStandardMaterial color={color} wireframe />
+      {children}
+    </mesh>
+  );
+}
+
+function FloatingText({ position, text, color = "white", fontSize = 0.3 }) {
+  return (
+    <Html position={position}>
+      <div style={{
+        color: color,
+        fontSize: `${fontSize * 50}px`,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        pointerEvents: 'none',
+        textShadow: '0 0 10px currentColor'
+      }}>
+        {text}
+      </div>
+    </Html>
+  );
+}
+
+function Room3D({ roomType, onInteract }) {
   const getRoomColor = () => {
     switch(roomType) {
       case 'factory': return '#00d4ff';
@@ -66,45 +119,30 @@ function Room3D({ roomType, onInteract }) {
     switch(roomType) {
       case 'factory':
         return (
-          <>
-            <Box ref={meshRef} args={[2, 1, 1]} position={[0, 0, 0]} onClick={() => onInteract('factory')}>
-              <meshStandardMaterial color={getRoomColor()} />
+          <group>
+            <Box position={[0, 0, 0]} onClick={() => onInteract('factory')} color={getRoomColor()}>
             </Box>
-            <Text position={[0, 1.5, 0]} fontSize={0.3} color="white">
-              Central de Produção
-            </Text>
-            <Text position={[0, -1.5, 0]} fontSize={0.2} color="gray">
-              Clique para acessar
-            </Text>
-          </>
+            <FloatingText position={[0, 1.5, 0]} text="Central de Produção" fontSize={0.3} />
+            <FloatingText position={[0, -1.5, 0]} text="Clique para acessar" color="gray" fontSize={0.2} />
+          </group>
         );
       case 'control':
         return (
-          <>
-            <Sphere ref={meshRef} args={[1, 32, 32]} position={[4, 0, 0]} onClick={() => onInteract('control')}>
-              <meshStandardMaterial color={getRoomColor()} wireframe />
+          <group>
+            <Sphere position={[4, 0, 0]} onClick={() => onInteract('control')} color={getRoomColor()}>
             </Sphere>
-            <Text position={[4, 1.5, 0]} fontSize={0.3} color="white">
-              Centro de Controle
-            </Text>
-            <Text position={[4, -1.5, 0]} fontSize={0.2} color="gray">
-              Melhorias e Upgrades
-            </Text>
-          </>
+            <FloatingText position={[4, 1.5, 0]} text="Centro de Controle" fontSize={0.3} />
+            <FloatingText position={[4, -1.5, 0]} text="Melhorias e Upgrades" color="gray" fontSize={0.2} />
+          </group>
         );
       case 'planets':
         return (
-          <>
-            <Box ref={meshRef} args={[1.5, 1.5, 1.5]} position={[-4, 0, 0]} onClick={() => onInteract('planets')}>
-              <meshStandardMaterial color={getRoomColor()} />
+          <group>
+            <Box position={[-4, 0, 0]} onClick={() => onInteract('planets')} color={getRoomColor()}>
             </Box>
-            <Text position={[-4, 1.5, 0]} fontSize={0.3} color="white">
-              Estações Planetárias
-            </Text>
-            <Text position={[-4, -1.5, 0]} fontSize={0.2} color="gray">
-              Mineração e Materiais
-            </Text>
-          </>
+            <FloatingText position={[-4, 1.5, 0]} text="Estações Planetárias" fontSize={0.3} />
+            <FloatingText position={[-4, -1.5, 0]} text="Mineração e Materiais" color="gray" fontSize={0.2} />
+          </group>
         );
       default:
         return null;
