@@ -527,56 +527,12 @@ function App() {
     }
   }, [playerId]);
 
-  const initializeGame = async () => {
-    try {
-      setLoading(true);
-      
-      // Get static data
-      const [materialsData, upgradesData, planetsData] = await Promise.all([
-        gameAPI.getMaterials(),
-        gameAPI.getUpgrades(),
-        gameAPI.getPlanets()
-      ]);
-      
-      setMaterials(materialsData);
-      setUpgrades(upgradesData);
-      setPlanets(planetsData);
-      
-      // Check for existing player or create new one
-      let savedPlayerId = localStorage.getItem('playerId');
-      if (!savedPlayerId) {
-        savedPlayerId = await gameAPI.createPlayer();
-        localStorage.setItem('playerId', savedPlayerId);
-      }
-      
-      setPlayerId(savedPlayerId);
-      await refreshGameState(savedPlayerId);
-      
-    } catch (err) {
-      console.error('Erro ao inicializar o jogo:', err);
-      setError('Falha ao carregar o jogo. Verifique sua conexão.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshGameState = async (pid = playerId) => {
-    if (!pid) return;
-    
-    try {
-      const state = await gameAPI.getGameState(pid);
-      setGameState(state);
-      setError(null);
-    } catch (err) {
-      console.error('Erro ao atualizar estado do jogo:', err);
-      setError('Erro ao sincronizar com o servidor');
-    }
-  };
-
   const handleBuildHouse = async () => {
     try {
       await gameAPI.buildHouse(playerId);
-      await refreshGameState();
+      // Refresh game state immediately
+      const state = await gameAPI.getGameState(playerId);
+      setGameState(state);
     } catch (err) {
       console.error('Erro ao construir casa:', err);
       if (err.response?.status === 400) {
@@ -588,7 +544,9 @@ function App() {
   const handleBuyUpgrade = async (upgradeId) => {
     try {
       await gameAPI.buyUpgrade(playerId, upgradeId);
-      await refreshGameState();
+      // Refresh game state immediately
+      const state = await gameAPI.getGameState(playerId);
+      setGameState(state);
     } catch (err) {
       console.error('Erro ao comprar upgrade:', err);
       if (err.response?.status === 400) {
@@ -600,7 +558,9 @@ function App() {
   const handleUnlockPlanet = async (planetId) => {
     try {
       await gameAPI.unlockPlanet(playerId, planetId);
-      await refreshGameState();
+      // Refresh game state immediately
+      const state = await gameAPI.getGameState(playerId);
+      setGameState(state);
     } catch (err) {
       console.error('Erro ao desbloquear planeta:', err);
       if (err.response?.status === 400) {
