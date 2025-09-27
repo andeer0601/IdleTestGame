@@ -639,6 +639,28 @@ function App() {
             <p className="text-center text-gray-400 mt-4">
               Use o mouse para navegar e clique nas estações para acessar
             </p>
+            
+            {/* Alternative buttons for better UX */}
+            <div className="flex justify-center gap-4 mt-4">
+              <button
+                onClick={() => setCurrentRoom('factory')}
+                className="bg-cyber-blue/20 hover:bg-cyber-blue/40 border border-cyber-blue text-cyber-blue px-4 py-2 rounded-lg transition-all duration-300 btn-cyber"
+              >
+                🏭 Central de Produção
+              </button>
+              <button
+                onClick={() => setCurrentRoom('control')}
+                className="bg-cyber-purple/20 hover:bg-cyber-purple/40 border border-cyber-purple text-cyber-purple px-4 py-2 rounded-lg transition-all duration-300 btn-cyber"
+              >
+                ⚙️ Centro de Controle
+              </button>
+              <button
+                onClick={() => setCurrentRoom('planets')}
+                className="bg-cyber-green/20 hover:bg-cyber-green/40 border border-cyber-green text-cyber-green px-4 py-2 rounded-lg transition-all duration-300 btn-cyber"
+              >
+                🪐 Estações Planetárias
+              </button>
+            </div>
           </div>
         )}
 
